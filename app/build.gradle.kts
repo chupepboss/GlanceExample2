@@ -1,8 +1,17 @@
 
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
+}
+
+val localProperties = Properties().apply {
+    val propertiesFile = rootProject.file("local.properties")
+    if (propertiesFile.exists()) {
+        propertiesFile.inputStream().use { load(it) }
+    }
 }
 
 android {
@@ -15,6 +24,17 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
+
+        val apiKey = localProperties.getProperty(
+            "ALPHA_VANTAGE_API_KEY",
+            ""
+        )
+
+        buildConfigField(
+            "String",
+            "ALPHA_VANTAGE_API_KEY",
+            "\"$apiKey\""
+        )
     }
 
     buildTypes {
@@ -30,6 +50,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 

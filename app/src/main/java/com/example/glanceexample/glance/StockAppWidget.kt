@@ -11,12 +11,16 @@ import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
 import androidx.glance.layout.Column
+import androidx.glance.layout.Spacer
 import androidx.glance.layout.fillMaxSize
+import androidx.glance.layout.height
 import androidx.glance.layout.padding
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
+import com.example.glanceexample.PriceDataRepo
+import com.example.glanceexample.StockQuote
 
 class StockAppWidget : GlanceAppWidget() {
 
@@ -24,13 +28,15 @@ class StockAppWidget : GlanceAppWidget() {
         context: Context,
         id: GlanceId
     ) {
+        val quote = PriceDataRepo.fetchQuote()
+
         provideContent {
-            WidgetContent()
+            WidgetContent(quote)
         }
     }
 
     @Composable
-    private fun WidgetContent() {
+    private fun WidgetContent(quote: StockQuote?) {
         Column(
             modifier = GlanceModifier
                 .fillMaxSize()
@@ -45,28 +51,50 @@ class StockAppWidget : GlanceAppWidget() {
                 )
             )
 
+            Spacer(GlanceModifier.height(8.dp))
+
             Text(
                 text = "Apple Inc. (AAPL)",
                 style = TextStyle(color = ColorProvider(Color.White))
             )
 
-            Text(
-                text = "$227.50",
-                style = TextStyle(
-                    color = ColorProvider(Color.White),
-                    fontWeight = FontWeight.Bold
+            Spacer(GlanceModifier.height(8.dp))
+
+            if (quote != null) {
+                Text(
+                    text = PriceDataRepo.formatPrice(quote.price),
+                    style = TextStyle(
+                        color = ColorProvider(Color.White),
+                        fontWeight = FontWeight.Bold
+                    )
                 )
-            )
 
-            Text(
-                text = "+2.4%  |  Сегодня",
-                style = TextStyle(color = ColorProvider(Color(0xFF7CFFB2)))
-            )
+                Text(
+                    text = PriceDataRepo.formatChange(quote.changePercent),
+                    style = TextStyle(
+                        color = ColorProvider(
+                            if (quote.changePercent >= 0)
+                                Color(0xFF7CFFB2)
+                            else
+                                Color(0xFFFF8585)
+                        )
+                    )
+                )
 
-            Text(
-                text = "Демонстрационные данные",
-                style = TextStyle(color = ColorProvider(Color.White))
-            )
+                Spacer(GlanceModifier.height(6.dp))
+
+                Text(
+                    text = "Дата котировки: ${quote.tradingDate}",
+                    style = TextStyle(color = ColorProvider(Color.White))
+                )
+            } else {
+                Text(
+                    text = "Нет данных. Проверь API и интернет.",
+                    style = TextStyle(
+                        color = ColorProvider(Color(0xFFFFD180))
+                    )
+                )
+            }
         }
     }
 }
