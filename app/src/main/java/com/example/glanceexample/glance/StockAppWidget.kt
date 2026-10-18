@@ -3,18 +3,20 @@ package com.example.glanceexample.glance
 
 import android.content.Context
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.provideContent
+import androidx.glance.background
 import androidx.glance.layout.Column
-import androidx.glance.layout.Row
-import androidx.glance.layout.Spacer
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.padding
-import androidx.glance.layout.width
+import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
+import androidx.glance.text.TextStyle
+import androidx.glance.unit.ColorProvider
 
 class StockAppWidget : GlanceAppWidget() {
 
@@ -32,29 +34,39 @@ class StockAppWidget : GlanceAppWidget() {
         Column(
             modifier = GlanceModifier
                 .fillMaxSize()
+                .background(ColorProvider(Color(0xFF17352B)))
                 .padding(16.dp)
         ) {
-            Text(text = "STOCK TRACKER")
+            Text(
+                text = "STOCK TRACKER",
+                style = TextStyle(
+                    color = ColorProvider(Color.White),
+                    fontWeight = FontWeight.Bold
+                )
+            )
 
-            Spacer(modifier = GlanceModifier.padding(4.dp))
+            Text(
+                text = "Apple Inc. (AAPL)",
+                style = TextStyle(color = ColorProvider(Color.White))
+            )
 
-            Text(text = "Apple Inc. (AAPL)")
+            Text(
+                text = "$227.50",
+                style = TextStyle(
+                    color = ColorProvider(Color.White),
+                    fontWeight = FontWeight.Bold
+                )
+            )
 
-            Spacer(modifier = GlanceModifier.padding(4.dp))
+            Text(
+                text = "+2.4%  |  Сегодня",
+                style = TextStyle(color = ColorProvider(Color(0xFF7CFFB2)))
+            )
 
-            Text(text = "$227.50")
-
-            Row {
-                Text(text = "+2.4%")
-
-                Spacer(modifier = GlanceModifier.width(8.dp))
-
-                Text(text = "Сегодня")
-            }
-
-            Spacer(modifier = GlanceModifier.padding(4.dp))
-
-            Text(text = "Демонстрационные данные")
+            Text(
+                text = "Демонстрационные данные",
+                style = TextStyle(color = ColorProvider(Color.White))
+            )
         }
     }
 }
